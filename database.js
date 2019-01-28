@@ -1,7 +1,7 @@
 // Implementando o readFile do fs(file system)
 const {
     readFile,
-    writeFile,
+    writeFile
 } = require('fs');
 
 // Implementando o promisify do util
@@ -36,7 +36,7 @@ class Database {
         await writeFileAsync(this.NOME_ARQUIVO, JSON.stringify(datas));
         return true
     }
-    
+
     async saveFile(hero) {
         const datas = await this.getFileData();
         const id = hero.id <= 2 ? hero.id : Date.now();
@@ -72,12 +72,33 @@ class Database {
         const datas = await this.getFileData();
         const indice = datas.findIndex(item => item.id === parseInt(id));
 
-        if(indice === -1) {
+        if (indice === -1) {
             throw Error('O heroi informado não existe');
         }
 
         datas.splice(indice, 1);
         return await this.writeFile(datas);
+    }
+
+    async updateFile(id, modificações) {
+        const datas = await this.getFileData();
+        const indice = datas.findIndex(item => item.id === parseInt(id));
+        if (indice === -1) {
+            throw Error('O heroi informado não existe');
+        }
+
+        const atual = datas[indice];
+        const objectUpdate = {
+            ...atual,
+            ...modificações
+        }
+        // Primeiro remove o item informado da lista
+        datas.splice(indice, 1);
+
+        return await this.writeFile([
+            ...datas,
+            objectUpdate
+        ]);
     }
 }
 
