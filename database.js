@@ -1,6 +1,7 @@
 // Implementando o readFile do fs(file system)
 const {
-    readFile
+    readFile,
+    writeFile
 } = require('fs');
 
 // Implementando o promisify do util
@@ -12,8 +13,9 @@ const {
     promisify
 } = require('util');
 
-// Usando o promisify para transformar o readFile em uma promise e trabalhar com async
+// Usando o promisify para transformar as funções abaixo em uma promise e trabalhar com async
 const readFileAsync = promisify(readFile);
+const writeFileAsync = promisify(writeFile);
 
 // Outra forma de obter dados json
 // const jsonData = require('./herois.json');
@@ -30,10 +32,30 @@ class Database {
         return JSON.parse(file.toString());
     }
 
-    setFile() {
-
+    async writeFile(datas) {
+        await writeFileAsync(this.NOME_ARQUIVO, JSON.stringify(datas));
+        return true
     }
     
+    async saveFile(hero) {
+        const datas = await this.getFileData();
+        const id = hero.id <= 2 ? hero.id : Date.now();
+        // Concatenando objetos
+        const heroWithId = {
+            id,
+            ...hero
+        }
+        // Concatenando array com objeto
+        const finalDatas = [
+            ...datas,
+            heroWithId
+        ]
+
+        const resultado = await this.writeFile(finalDatas)
+
+        return resultado
+    }
+
     async list(id) {
         // Pegando os arquivos
         const datas = await this.getFileData();
