@@ -12,7 +12,7 @@ const DEFAULT_ITEM_CADASTRAR = {
 }
 
 describe('Manipulação de Herois', () => {
-    before(async() => {
+    before(async () => {
         await database.saveFile(DEFAULT_ITEM_CADASTRAR);
     });
     it('deve pesquisar um heroi, usando arquivos', async () => {
@@ -34,6 +34,13 @@ describe('Manipulação de Herois', () => {
         console.log(atual);
 
         deepEqual(atual, expected);
+    });
+
+    it.only('deve remover um heroi, usando arquivos', async () => {
+        const expected = true;
+        const resultado = await database.removeFile(DEFAULT_ITEM_CADASTRAR.id);
+
+        deepEqual(resultado, expected);
     });
 
 });

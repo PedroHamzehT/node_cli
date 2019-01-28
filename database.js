@@ -1,7 +1,7 @@
 // Implementando o readFile do fs(file system)
 const {
     readFile,
-    writeFile
+    writeFile,
 } = require('fs');
 
 // Implementando o promisify do util
@@ -62,6 +62,22 @@ class Database {
         // Filtrando o datas pelo ID que vai ser passado para ele
         const filterDatas = datas.filter(item => (id ? (item.id === id) : true));
         return filterDatas
+    }
+
+    async removeFile(id) {
+        if (!id) {
+            return await this.writeFile([]);
+        }
+
+        const datas = await this.getFileData();
+        const indice = datas.findIndex(item => item.id === parseInt(id));
+
+        if(indice === -1) {
+            throw Error('O heroi informado não existe');
+        }
+
+        datas.splice(indice, 1);
+        return await this.writeFile(datas);
     }
 }
 
